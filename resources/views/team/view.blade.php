@@ -17,6 +17,11 @@
             {{ session('status') }}
         </div>
      @endif
+     @if (session('update'))
+        <div class="alert alert-success">
+            {{ session('update') }}
+        </div>
+     @endif
      <div class="button">
         <!-- Button trigger modal -->
     <button style="float: right;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -35,37 +40,37 @@
                <form method="POST" action="{{route('new-team.create')}}">
                 @csrf
                 <div class="mb-3">
-                  <input type="text" placeholder="Name" name="name" class="@error('name') is-invalid @enderror" />
+                  <input type="text" placeholder="Name" name="name" class="@error('name') is-invalid @enderror form-control" />
                   @error('name')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
                 </div>
                 <div class="mb-3">
-                  <input type="email" placeholder="Email" name="email" class="@error('email') is-invalid @enderror" />
+                  <input type="email" placeholder="Email" name="email" class="@error('email') is-invalid @enderror form-control" />
                   @error('email')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
                 </div>
                 <div class="mb-3">
-                  <input type="number" placeholder="Teliphone" name="tele" class="@error('tele') is-invalid @enderror" />
+                  <input type="number" placeholder="Teliphone" name="tele" class="@error('tele') is-invalid @enderror form-control" />
                   @error('tele')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
                 </div>
                 <div class="mb-3">
-                  <input type="text" placeholder="Route Name" name="route" class="@error('route') is-invalid @enderror" />
+                  <input type="text" placeholder="Route Name" name="route" class="@error('route') is-invalid @enderror form-control" />
                   @error('route')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
                 </div>
                 <div class="mb-3">
-                  <input type="date" name="joined_date" class="@error('joined_date') is-invalid @enderror" />
+                  <input type="date" name="joined_date" class="@error('joined_date') is-invalid @enderror form-control" />
                   @error('joined_date')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
                 </div>
                 <div class="mb-3">
-                  <textarea name="comment" class="@error('comment') is-invalid @enderror"></textarea>
+                  <textarea name="comment" class="@error('comment') is-invalid @enderror form-control"></textarea>
                   @error('comment')
                     <span class="alert alert-danger">{{ $message }}</span>
                   @enderror
@@ -97,7 +102,7 @@
             <td>{{$item->tele}}</td>
             <td>{{$item->joined_date}}</td>
             <td>
-                <a data-id="{{$item->id}}" type="button" class="btn btn-primary openModal" data-bs-toggle="modal" data-bs-target="#viewModal">
+                <a data-id="{{$item->id}}" type="button" class="btn btn-primary viewModal" data-bs-toggle="modal" data-bs-target="#viewModal">
                     View
                 </a>
                 <!-- Modal -->
@@ -109,9 +114,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3">
-                                ID :<span id="append-id"></span>
-                             </div>
+                        <div class="mb-3">
+                            ID :<span id="append-id"></span>
+                        </div>
                          <div class="mb-3">
                             Full Name :<span id="append-name"></span>
                          </div>
@@ -139,7 +144,47 @@
                 </div>
             </td>
             <td>
-                <a href="">Edit</a>
+                <a data-edit-id="{{$item->id}}" type="button" class="btn btn-primary editModal" data-bs-toggle="modal" data-bs-target="#editModal">
+                    Edit
+                </a>
+                <!-- Modal -->
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="edit-modal-title"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <form method="POST" action="{{route('update-team.update')}}">
+                          @csrf
+                        <div class="mb-3">
+                            ID :<input id="edit-id" readonly class="form-control" name="id" />
+                        </div>
+                         <div class="mb-3">
+                            Full Name :<input type="text" class="form-control" id="edit-name" name="name" required />
+                         </div>
+                         <div class="mb-3">
+                            Email Address "<input type="email" class="form-control" id="edit-email" name="email" required />
+                         </div>
+                         <div class="mb-3">
+                            Telephone :<input type="number" class="form-control" id="edit-tele" name="tele" required />
+                         </div>
+                         <div class="mb-3">
+                            Joined Date :<input type="date" class="form-control"id="edit-joined" name="joined_date" required />
+                         </div>
+                         <div class="mb-3">
+                            Current Routes :<input type="text" class="form-control" id="edit-route" name="route" required />
+                         </div>
+                         <div class="mb-3">
+                            Comments :<textarea id="edit-comments" class="form-control" name="comment" required></textarea>
+                         </div>
+                         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                        </form>
+                        </div>
+                    </div>
+                    </div>
+                </div>
             </td>
             <td><a href="" >Delete</a></td>
            </tr>
@@ -150,13 +195,9 @@
 
    <script>
         $(document).ready(function(){
-            $(".openModal").on('click', function(){
 
+            $(".viewModal").on('click', function(){
                 var id = $(this).data('id');
-                //$("#append-name").append($(this).data('id'));
-                //var url = "{{ route('show-team.show', ":id") }}";
-                //url = url.replace(':id', id);
-
                 $.ajax({
                     type: 'GET',
                     enctype: 'multipart/form-data',
@@ -187,6 +228,28 @@
                 $("#append-joined").html("");
                 $("#append-route").html("");
                 $("#append-comments").html("");
+            });
+
+            $(".editModal").on('click', function(){
+                var id = $(this).data('edit-id');
+                $.ajax({
+                    type: 'GET',
+                    enctype: 'multipart/form-data',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: '/edit-team/' + id,
+                    success:function(data){
+                        $("#edit-id").val(data.id);
+                        $("#edit-name").val(data.name);
+                        $("#edit-modal-title").val(data.name);
+                        $("#edit-email").val(data.email);
+                        $("#edit-tele").val(data.tele);
+                        $("#edit-joined").val(data.joined_date);
+                        $("#edit-route").val(data.route);
+                        $("#edit-comments").val(data.comment);
+                    }
+                });
             });
         });
     </script>

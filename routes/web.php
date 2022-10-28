@@ -22,3 +22,9 @@ Route::post('/new-team',[TeamController::class, 'create'])
 
 Route::get('/show-team/{id}',[TeamController::class, 'show'])
 ->name('show-team.show');
+
+Route::get('/edit-team/{id}',[TeamController::class, 'edit'])
+->name('edit-team.edit');
+
+Route::post('/update-team',[TeamController::class, 'update'])
+->name('update-team.update');

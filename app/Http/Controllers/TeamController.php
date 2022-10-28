@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
@@ -61,9 +62,9 @@ class TeamController extends Controller
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function edit(Team $team)
+    public function edit(Team $id)
     {
-        //
+        return $id;
     }
 
     /**
@@ -73,9 +74,20 @@ class TeamController extends Controller
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTeamRequest $request, Team $team)
+    public function update(Request $request)
     {
-        //
+            DB::table('teams')
+                    ->where('id', $request->id)
+                    ->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'tele' => $request->tele,
+                        'joined_date' => $request->joined_date,
+                        'route' => $request->route,
+                        'comment' => $request->comment
+                    ]);
+
+        return redirect()->route('view-team.show')->with('update', 'Team member details updated');
     }
 
     /**
