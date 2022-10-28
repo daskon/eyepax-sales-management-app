@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[TeamController::class, 'index'])
 ->name('view-team.show');
+
+Route::post('/new-team',[TeamController::class, 'create'])
+->name('new-team.create');
