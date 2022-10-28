@@ -29,9 +29,9 @@ class TeamController extends Controller
     public function create(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:20',
+            'name' => 'required|max:30',
             'email' => 'required|email:rfc,dns|unique:teams',
-            'tele' => 'required|max:9',
+            'tele' => 'required|max:10',
             'route' => 'required',
             'joined_date' => 'required',
             'comment' => 'required|max:200'
