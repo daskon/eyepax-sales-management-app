@@ -45,25 +45,14 @@ class TeamController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTeamRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTeamRequest $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Team  $team
      * @return \Illuminate\Http\Response
      */
-    public function show(Team $team)
+    public function show(Team $id)
     {
-        //
+        return $id;
     }
 
     /**

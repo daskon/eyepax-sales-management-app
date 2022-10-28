@@ -19,3 +19,6 @@ Route::get('/',[TeamController::class, 'index'])
 
 Route::post('/new-team',[TeamController::class, 'create'])
 ->name('new-team.create');
+
+Route::get('/show-team/{id}',[TeamController::class, 'show'])
+->name('show-team.show');
